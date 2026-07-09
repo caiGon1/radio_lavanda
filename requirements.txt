@@ -1,0 +1,5 @@
+google-genai
+supabase
+edge-tts
+spotipy>=2.26.0
+python-dotenv
