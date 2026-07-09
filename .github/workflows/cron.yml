@@ -1,0 +1,62 @@
+name: Rádio Lavanda - Transmissão Diária
+
+on:
+  schedule:
+    # Executa todos os dias à meia-noite (00:00 UTC)
+    # Nota: A nuvem geralmente usa o fuso horário UTC. Ajuste se necessário para a sua zona.
+    - cron: '0 3 * * *'
+  workflow_dispatch: # Permite executar manualmente no GitHub clicando num botão
+
+jobs:
+  run-radio-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do código
+      uses: actions/checkout@v3
+
+    - name: Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x' # Substitua pela sua versão do Python
+
+    - name: Instalar dependências
+      run: pip install -r requirements.txt
+
+    - name: Executar o script principal
+      env:
+        # Aqui terá de mapear as variáveis de ambiente que o script precisa
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+        SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+        SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+        SPOTIFY_REDIRECT_URI: ${{ secrets.SPOTIFY_REDIRECT_URI }}
+        PLAYLIST_ID: ${{ secrets.PLAYLIST_ID }}
+        # Preencha isso DEPOIS de publicar o podcast.xml no Spotify for Podcasters
+        # (https://podcasters.spotify.com) e o show ficar visível no catálogo.
+        # Enquanto vazio, a playlist recebe só música.
+        SPOTIFY_SHOW_ID: ${{ secrets.SPOTIFY_SHOW_ID }}
+        TTS_VOICE: ${{ secrets.TTS_VOICE }}
+        FAIXAS_POR_ARTISTA: ${{ secrets.FAIXAS_POR_ARTISTA }}
+        TAMANHO_PLAYLIST: ${{ secrets.TAMANHO_PLAYLIST }}
+        PASTA_PROGRAMAS: ${{ secrets.PASTA_PROGRAMAS }}
+        PASTA_PROMPTS: ${{ secrets.PASTA_PROMPTS }}
+        FEED_BUCKET: ${{ secrets.FEED_BUCKET }}
+        FEED_FILENAME:  ${{ secrets.FEED_FILENAME }}
+        FEED_TITLE: ${{ secrets.FEED_TITLE }}
+        FEED_LINK: ${{ secrets.FEED_LINK }}
+        FEED_DESCRIPTION: $ {{ secrets.FEED_DESCRIPTION }}
+        FEED_LANGUAGE: ${{ secrets.FEED_LANGUAGE }}
+        FEED_AUTHOR: $ {{ secrets.FEED_AUTHOR }}
+        FEED_MANAGING_EDITOR: $ {{ secrets.FEED_MANAGING_EDITOR }}
+        FEED_OWNER_NAME: ${{ secrets.FEED_OWNER_NAME }}
+        FEED_OWNER_EMAIL: $ {{ secrets.FEED_OWNER_EMAIL }}
+        FEED_IMAGE_URL: $ {{ secrets.FEED_IMAGE_URL }}
+        FEED_EXPLICIT: $ {{ secrets.FEED_EXPLICIT }}
+        FEED_TYPE: $ {{ secrets.FEED_TYPE }}  
+        FEED_CATEGORY: $ {{ secrets.FEED_CATEGORY }}
+        FEED_GUID_PREFIX: $ {{ secrets.FEED_GUID_PREFIX }}
+      run: python main.py
