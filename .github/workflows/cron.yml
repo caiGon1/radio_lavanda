@@ -23,6 +23,9 @@ jobs:
     - name: Instalar dependências
       run: pip install -r requirements.txt
 
+    - name: Criar ficheiro cache do Spotify
+      run: echo '${{ secrets.SPOTIFY_CACHE }}' > .cache
+
     - name: Executar o script principal
       env:
         # Aqui terá de mapear as variáveis de ambiente que o script precisa
