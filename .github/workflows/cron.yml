@@ -4,7 +4,7 @@ on:
   schedule:
     # Executa todos os dias à meia-noite (00:00 UTC)
     # Nota: A nuvem geralmente usa o fuso horário UTC. Ajuste se necessário para a sua zona.
-    - cron: '0 3 * * *'
+    - cron: '0 0 * * 0,3'
   workflow_dispatch: # Permite executar manualmente no GitHub clicando num botão
 
 jobs:
