@@ -25,6 +25,9 @@ SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 SPOTIFY_REDIRECT_URI = os.getenv("SPOTIFY_REDIRECT_URI", "http://127.0.0.1:8888/callback")
 PLAYLIST_ID = os.getenv("PLAYLIST_ID")
 
+
+SPEECHIFY_API_KEY = os.getenv("SPEECHIFY_API_KEY")
+
 # ID do "Show" (podcast) no catálogo do Spotify. Só existe DEPOIS que você
 # submete o podcast.xml via Spotify for Podcasters e o Spotify aprova/ingere
 # o feed. Enquanto vazio, a playlist recebe só música (comportamento atual).

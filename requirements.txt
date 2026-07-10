@@ -3,3 +3,4 @@ supabase
 edge-tts
 spotipy>=2.26.0
 python-dotenv
+pydub==0.25.1

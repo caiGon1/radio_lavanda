@@ -26,6 +26,9 @@ jobs:
     - name: Criar ficheiro cache do Spotify
       run: echo '${{ secrets.SPOTIFY_CACHE }}' > .cache
 
+    - name: Instalar FFmpeg
+      run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
     - name: Executar o script principal
       env:
         # Aqui terá de mapear as variáveis de ambiente que o script precisa
@@ -38,6 +41,7 @@ jobs:
         SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
         SPOTIFY_REDIRECT_URI: ${{ secrets.SPOTIFY_REDIRECT_URI }}
         PLAYLIST_ID: ${{ secrets.PLAYLIST_ID }}
+        SPEECHIFY_API_KEY: ${{ secrets.SPEECHIFY_API_KEY }}
         # Preencha isso DEPOIS de publicar o podcast.xml no Spotify for Podcasters
         # (https://podcasters.spotify.com) e o show ficar visível no catálogo.
         # Enquanto vazio, a playlist recebe só música.
