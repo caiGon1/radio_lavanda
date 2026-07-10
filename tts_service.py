@@ -1,24 +1,20 @@
 import os
 import logging
 import requests
+import base64 # <-- NOVIDADE: Adicione este import no topo
 from pydub import AudioSegment
 import config
 
 logger = logging.getLogger(__name__)
 
 def gerar_audio_com_fundo(texto: str, caminho_saida: str) -> bool:
-    """
-    Gera a voz do locutor através da API do Speechify e sobrepõe 
-    uma música de fundo suave utilizando pydub.
-    """
     caminho_voz_pura = "temp_voz_pura.mp3"
     caminho_trilha_fundo = "assets/musica_fundo_suave.mp3"
     
-    # Pegando a chave da API a partir das configurações ou variáveis de ambiente
     api_key = os.getenv("SPEECHIFY_API_KEY")
     
     if not api_key:
-        logger.error("Chave 'SPEECHIFY_API_KEY' não encontrada nas variáveis de ambiente.")
+        logger.error("Chave 'SPEECHIFY_API_KEY' não encontrada.")
         return False
 
     # 1. Requisição POST para a API do Speechify
@@ -33,8 +29,9 @@ def gerar_audio_com_fundo(texto: str, caminho_saida: str) -> bool:
         }
         
         payload = {
-            "input": f"<speak>{texto}</speak>", # SSML para melhor controle de leitura se necessário
-            "voice_id": "kristy",               # Substitua pelo ID da voz de sua preferência
+            # Removidas as tags <speak> para evitar o erro 400 (Bad Request)
+            "input": texto, 
+            "voice_id": "kristy",
             "audio_format": "mp3"
         }
         
@@ -44,11 +41,25 @@ def gerar_audio_com_fundo(texto: str, caminho_saida: str) -> bool:
             logger.error("Erro na API do Speechify (%s): %s", response.status_code, response.text)
             return False
             
-        # Salva temporariamente a voz sem fundo
-        with open(caminho_voz_pura, "wb") as f:
-            f.write(response.content)
+        # --- A CORREÇÃO ENTRA AQUI ---
+        # A API devolve um JSON com o áudio em Base64, e não o ficheiro direto.
+        dados_json = response.json()
+        
+        # Procura a chave de áudio (pode vir como audio_data ou audioData)
+        audio_base64 = dados_json.get("audio_data") or dados_json.get("audioData")
+        
+        if not audio_base64:
+            logger.error("Não foi possível encontrar a chave de áudio no JSON de resposta.")
+            return False
             
-        logger.info("Áudio bruto do Speechify baixado com sucesso.")
+        # Transforma o texto longo em formato binário real (o verdadeiro MP3)
+        audio_bytes = base64.b64decode(audio_base64)
+            
+        # Agora sim estamos a guardar um ficheiro MP3 válido!
+        with open(caminho_voz_pura, "wb") as f:
+            f.write(audio_bytes)
+            
+        logger.info("Áudio bruto decodificado com sucesso.")
 
     except Exception as erro:
         logger.error("Falha na comunicação com o Speechify: %s", erro)
