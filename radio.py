@@ -70,7 +70,7 @@ def _gerar_blocos_de_audio(playlist: list[dict]) -> list[dict]:
         # Nome de arquivo FIXO (sem data): o objetivo é sobrescrever o mesmo
         # episódio todo dia, não acumular um histórico.
         nome_arquivo_local = f"temp_bloco_{numero_bloco}.mp3"
-        sucesso_audio = tts_service.gerar_audio(roteiro, nome_arquivo_local)
+        sucesso_audio = tts_service.gerar_audio_com_fundo(roteiro, nome_arquivo_local)
         if not sucesso_audio:
             logger.error("Pulando bloco %s: falha na geração de áudio.", numero_bloco)
             continue
