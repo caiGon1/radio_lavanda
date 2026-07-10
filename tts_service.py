@@ -31,7 +31,7 @@ def gerar_audio_com_fundo(texto: str, caminho_saida: str) -> bool:
         payload = {
             # Removidas as tags <speak> para evitar o erro 400 (Bad Request)
             "input": texto, 
-            "voice_id": "lucas",
+            "voice_id": "caio",
             "audio_format": "mp3"
         }
         
