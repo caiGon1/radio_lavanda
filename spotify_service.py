@@ -33,7 +33,6 @@ def _get_client() -> spotipy.Spotify:
 
 
 def buscar_faixas_por_artista(nome_artista: str, limite: int = None) -> list[dict]:
-    """Busca faixas de um artista específico, evitando duplicar o mesmo artista."""
     limite = limite or config.FAIXAS_POR_ARTISTA
     sp = _get_client()
     try:
@@ -50,21 +49,28 @@ def buscar_faixas_por_artista(nome_artista: str, limite: int = None) -> list[dic
     random.shuffle(faixas)
     escolhidas = faixas[:limite]
 
+    bpm_map = {}
+    try:
+        track_ids = [faixa["id"] for faixa in escolhidas]
+        if track_ids:
+            for feat in filter(None, features):
+                bpm_map[feat["id"]] = feat["tempo"]
+    except Exception as erro:
+        logger.warning("Falha ao buscar detalhes de áudio (BPM) para '%s': %s", nome_artista, erro)
+
     return [
         {
             "name": faixa["name"],
             "artist": faixa["artists"][0]["name"],
             "uri": faixa["uri"],
+            "bpm": int(bpm_map.get(faixa["id"], 120)) 
         }
         for faixa in escolhidas
     ]
 
 
 def montar_playlist_do_dia(artistas: list[str]) -> list[dict]:
-    """
-    Para cada artista do planejamento, busca faixas e monta a lista final,
-    garantindo que não haja artistas repetidos e respeitando o tamanho alvo.
-    """
+
     playlist: list[dict] = []
     artistas_usados = set()
 
@@ -81,8 +87,12 @@ def montar_playlist_do_dia(artistas: list[str]) -> list[dict]:
             logger.info("Adicionadas %s faixa(s) de %s", len(faixas), artista)
 
     playlist = playlist[: config.TAMANHO_PLAYLIST]
-    return playlist
 
+    playlist.sort(key=lambda faixa: faixa.get("bpm", 120))
+    
+    logger.info("Playlist reordenada por BPM com sucesso para a transmissão.")
+
+    return playlist
 
 def atualizar_playlist(faixas: list[dict]) -> bool:
     """Substitui as faixas da playlist alvo no Spotify pelas faixas do dia (só música)."""
