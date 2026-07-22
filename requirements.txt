@@ -6,3 +6,4 @@ python-dotenv
 pydub==0.25.1
 elevenlabs
 duckduckgo_search
+ddgs

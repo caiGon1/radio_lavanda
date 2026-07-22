@@ -8,8 +8,7 @@ import json
 import logging
 import time
 from pathlib import Path
-
-from duckduckgo_search import DDGS
+from ddgs import DDGS
 from google import genai
 
 import config
