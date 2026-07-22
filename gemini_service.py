@@ -10,6 +10,7 @@ import time
 from pathlib import Path
 
 from google import genai
+from google.genai import types  # Importe o módulo de tipos da SDK
 
 import config
 
@@ -31,24 +32,37 @@ def _carregar_prompt(nome_arquivo: str) -> str:
 
 
 def _chamar_gemini(prompt: str, tentativas: int = 3, espera_s: int = 4) -> str | None:
-    """Wrapper com retry simples para chamadas de texto ao Gemini."""
+    """Wrapper com retry simples para chamadas de texto ao Gemini com Google Search."""
     client = _get_client()
+
+    # Define a configuração habilitando a pesquisa no Google
+    config_execucao = types.GenerateContentConfig(
+        tools=[{"google_search": {}}]  # Ativa a busca Web
+    )
+
     for tentativa in range(1, tentativas + 1):
         try:
             resposta = client.models.generate_content(
                 model=config.GEMINI_MODEL,
                 contents=prompt,
+                config=config_execucao,  # Passa a configuração aqui
             )
             if resposta.text:
                 return resposta.text.strip()
-            logger.warning("Resposta vazia do Gemini (tentativa %s/%s)", tentativa, tentativas)
+            logger.warning(
+                "Resposta vazia do Gemini (tentativa %s/%s)",
+                tentativa,
+                tentativas,
+            )
         except Exception as erro:
             logger.warning(
-                "Erro ao chamar Gemini (tentativa %s/%s): %s", tentativa, tentativas, erro
+                "Erro ao chamar Gemini (tentativa %s/%s): %s",
+                tentativa,
+                tentativas,
+                erro,
             )
         time.sleep(espera_s)
     return None
-
 
 def gerar_planejamento_do_dia() -> dict | None:
     """

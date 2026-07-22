@@ -26,8 +26,8 @@ logger = logging.getLogger("radio")
 BLOCOS_CONFIG = {
     1: "Abertura do show. Se apresente, convide os ouvintes a curtirem a rádio "
        "e fale sobre o que eles podem esperar do programa de hoje.",
-    2: "Transição 1. Traga uma curiosidade musical rápida, sinta-se livre para pesquisar curiosidades, mas mantenha o tom leve e divertido.",
-    3: "Transição 2. Faça uma reflexão profunda, mas leve, sobre a vida e convide o ouvinte a estar presente no momento.",
+    2: "Transição 1. Traga uma curiosidade musical rápida, sinta-se livre para pesquisar curiosidades, mas mantenha o tom leve e divertido. Relacione a curiosidade com o tema do dia ou com os artistas que estão tocando.",
+    3: "Transição 2. Faça uma reflexão profunda, mas leve, sobre a vida e convide o ouvinte a estar presente no momento. Relacione a reflexão com o tema do dia ou com os artistas que estão tocando.",
     4: "Encerramento. Agradeça os ouvintes por escolherem a rádio lavanda, "
        "deseje um ótimo dia e chame o último bloco musical.",
 }

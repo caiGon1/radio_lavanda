@@ -54,6 +54,8 @@ PASTA_PROMPTS = os.getenv("PASTA_PROMPTS", "prompts")
 # ---------------------------------------------------------------------------
 # Assume que BUCKET_NAME é público no Supabase Storage. Se não for, as URLs
 # geradas não vão funcionar em apps de podcast (Spotify, Apple Podcasts etc).
+
+
 FEED_BUCKET = os.getenv("FEED_BUCKET", BUCKET_NAME)
 FEED_FILENAME = os.getenv("FEED_FILENAME", "podcast.xml")
 
@@ -73,11 +75,13 @@ FEED_CATEGORY = os.getenv("FEED_CATEGORY", "Music")
 # Prefixo do guid de cada bloco. Usa o mesmo padrão do podcast.xml original
 # ("dj-bloco-1", "dj-bloco-2"...) pra que o update in-place encontre e
 # sobrescreva exatamente os itens que já existem, em vez de criar novos.
+
 FEED_GUID_PREFIX = os.getenv("FEED_GUID_PREFIX", "dj-bloco")
 
 # ---------------------------------------------------------------------------
 # Validação
 # ---------------------------------------------------------------------------
+
 _REQUIRED = {
     "GEMINI_API_KEY": GEMINI_API_KEY,
     "SUPABASE_URL": SUPABASE_URL,
