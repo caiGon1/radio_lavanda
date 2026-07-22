@@ -24,8 +24,9 @@ def gerar_audio_com_fundo(texto: str, caminho_saida: str) -> bool:
             text=texto,
             voice_id="EbiSUflQjzm4g7S895SC",  
             model_id="eleven_v3",
-            languageCode="pt",
+              language_code="pt",
             output_format="mp3_44100_128"
+           
         )
         
         # Salva os bytes recebidos em um arquivo MP3 válido
