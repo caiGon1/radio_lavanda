@@ -12,9 +12,8 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
 import config
-
-
 from bpm_service import obter_bpm
+
 logger = logging.getLogger("spotify_service")
 
 _sp = None
@@ -50,16 +49,7 @@ def buscar_faixas_por_artista(nome_artista: str, limite: int = None) -> list[dic
 
     random.shuffle(faixas)
     escolhidas = faixas[:limite]
-
-    bpm_map = {}
-    try:
-        track_ids = [faixa["id"] for faixa in escolhidas]
-        if track_ids:
-            for feat in filter(None, features):
-                bpm_map[feat["id"]] = feat["tempo"]
-    except Exception as erro:
-        logger.warning("Falha ao buscar detalhes de áudio (BPM) para '%s': %s", nome_artista, erro)
-
+    
     return [
         {
             "name": faixa["name"],
@@ -90,6 +80,9 @@ def montar_playlist_do_dia(artistas: list[str]) -> list[dict]:
 
     playlist = playlist[: config.TAMANHO_PLAYLIST]
 
+    sem_bpm = sum(1 for f in playlist if f.get("bpm") is None)
+    if sem_bpm:
+        logger.warning("%s de %s faixas ficaram sem BPM real (usando fallback).", sem_bpm, len(playlist))
     playlist.sort(key=lambda faixa: faixa.get("bpm") or 120)
     
     logger.info("Playlist reordenada por BPM com sucesso para a transmissão.")
