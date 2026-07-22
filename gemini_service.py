@@ -36,10 +36,12 @@ def buscar_contexto_duckduckgo(termo: str, max_resultados: int = 3) -> str:
     """
     try:
         with DDGS() as ddgs:
-            resultados = list(ddgs.news(keywords=termo, region="wt-wt", max_results=max_resultados))
+            # Passando 'termo' direto como primeiro argumento (query)
+            resultados = list(ddgs.news(termo, region="wt-wt", max_results=max_resultados))
             
             if not resultados:
-                resultados = list(ddgs.text(keywords=termo, region="wt-wt", max_results=max_resultados))
+                # Fallback para busca textual simples
+                resultados = list(ddgs.text(termo, region="wt-wt", max_results=max_resultados))
 
         contextos = []
         for r in resultados:
