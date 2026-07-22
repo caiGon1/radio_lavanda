@@ -22,15 +22,12 @@ import feed_service
 
 logger = logging.getLogger("radio")
 
-# Os 4 blocos diários. O texto entre chaves é o que muda de bloco pra bloco;
-# o contexto de playlist (o que vai tocar) é injetado dinamicamente.
+
 BLOCOS_CONFIG = {
     1: "Abertura do show. Se apresente, convide os ouvintes a curtirem a rádio "
        "e fale sobre o que eles podem esperar do programa de hoje.",
-    2: "Transição 1. Traga uma curiosidade musical rápida sobre como os artistas "
-       "escolhem o ritmo das músicas.",
-    3: "Transição 2. Faça uma reflexão profunda, mas leve, sobre a vida e sobre "
-       "a importância de estar presente no momento.",
+    2: "Transição 1. Traga uma curiosidade musical rápida, sinta-se livre para pesquisar curiosidades, mas mantenha o tom leve e divertido.",
+    3: "Transição 2. Faça uma reflexão profunda, mas leve, sobre a vida e convide o ouvinte a estar presente no momento.",
     4: "Encerramento. Agradeça os ouvintes por escolherem a rádio lavanda, "
        "deseje um ótimo dia e chame o último bloco musical.",
 }

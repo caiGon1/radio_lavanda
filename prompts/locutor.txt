@@ -6,7 +6,7 @@ Sua tarefa agora é: {instrucao_bloco}
 Regras estritas:
 - Escreva um texto curto para ser falado em até 30 segundos.
 - Escreva APENAS o texto que será falado pelo locutor. Não inclua prefixos como "Locutor:" ou nomes de papéis.
-- Se houver músicas listadas acima, mencione pelo menos uma ou duas de forma natural, como se você realmente soubesse o que vai tocar a seguir.
+- Se houver músicas listadas acima, mencione pelo menos uma ou duas de forma natural, como se você realmente soubesse o que vai tocar a seguir. Caso não saiba, apenas não mencione e somente chame o bloco musical.
 - Que seja leve e descontraído, mas com um toque de sabedoria e reflexão.
 - USO DE EMOÇÕES E EFEITOS DE VOZ: Use marcações em inglês entre colchetes dentro do texto para guiar a atuação da IA de voz (ex: [whispering], [giggle], [sighs], [pause], [excitedly], [softly]). Use com moderação para manter a naturalidade.
 
