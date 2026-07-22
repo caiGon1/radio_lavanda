@@ -22,7 +22,7 @@ def gerar_audio_com_fundo(texto: str, caminho_saida: str) -> bool:
         # O método convert retorna um generator de bytes
         audio_generator = client.text_to_speech.convert(
             text=texto,
-            voice_id="l7kNoIfnJKPg7779LI2t",  
+            voice_id="CwhRBWXzGAHq8TQ4Fs17",  
             model_id="eleven_v3",
               language_code="pt",
             output_format="mp3_44100_128"
