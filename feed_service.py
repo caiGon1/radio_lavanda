@@ -24,9 +24,6 @@ ET.register_namespace("itunes", ITUNES_NS)
 
 
 def _criar_canal_vazio() -> ET.Element:
-    # Não declarar xmlns:itunes manualmente aqui: ET.register_namespace já
-    # cuida disso ao serializar, e declarar os dois juntos gera XML inválido
-    # (atributo xmlns:itunes duplicado).
     rss = ET.Element("rss", {"version": "2.0"})
     channel = ET.SubElement(rss, "channel")
 
@@ -120,10 +117,6 @@ def atualizar_episodios(blocos: list[dict]) -> bool:
         - descricao (str)       -> pode ser o próprio roteiro do Saturn
         - nome_arquivo_nuvem (str)
         - tamanho_bytes (int)
-
-    Para cada bloco, encontra o <item> com guid "{FEED_GUID_PREFIX}-{numero_bloco}"
-    e atualiza seus campos in-place. Se o item ainda não existir no feed, cria.
-    Nunca acumula: o feed sempre tem exatamente um episódio por bloco.
     """
     rss = _carregar_feed_existente()
     channel = rss.find("channel")
@@ -132,6 +125,8 @@ def atualizar_episodios(blocos: list[dict]) -> bool:
         return False
 
     agora = datetime.now(timezone.utc)
+    # Gera um timestamp único em milissegundos para invalidar o cache das CDNs/Players
+    cache_buster = int(agora.timestamp())
 
     # Indexa os itens existentes por guid pra localizar rápido o que atualizar.
     itens_por_guid = {}
@@ -144,7 +139,10 @@ def atualizar_episodios(blocos: list[dict]) -> bool:
 
     for bloco in blocos:
         guid = f"{config.FEED_GUID_PREFIX}-{bloco['numero_bloco']}"
-        url_audio = supabase_service.url_publica(config.FEED_BUCKET, bloco["nome_arquivo_nuvem"])
+        url_audio_base = supabase_service.url_publica(config.FEED_BUCKET, bloco["nome_arquivo_nuvem"])
+        
+        # FIX DE CACHE: Adiciona o timestamp como parâmetro na URL do áudio
+        url_audio = f"{url_audio_base}?v={cache_buster}"
 
         campos = dict(
             titulo=bloco["titulo"],

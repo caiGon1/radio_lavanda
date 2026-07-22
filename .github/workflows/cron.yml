@@ -4,7 +4,7 @@ on:
   schedule:
     # Executa todos os dias à meia-noite (00:00 UTC)
     # Nota: A nuvem geralmente usa o fuso horário UTC. Ajuste se necessário para a sua zona.
-    - cron: '0 0 * * 0,3'
+    - cron: '0 0 * * 0' # Executa todos os domingos à meia-noite (00:00 UTC)
   workflow_dispatch: # Permite executar manualmente no GitHub clicando num botão
 
 jobs:
@@ -42,9 +42,7 @@ jobs:
         SPOTIFY_REDIRECT_URI: ${{ secrets.SPOTIFY_REDIRECT_URI }}
         PLAYLIST_ID: ${{ secrets.PLAYLIST_ID }}
         SPEECHIFY_API_KEY: ${{ secrets.SPEECHIFY_API_KEY }}
-        # Preencha isso DEPOIS de publicar o podcast.xml no Spotify for Podcasters
-        # (https://podcasters.spotify.com) e o show ficar visível no catálogo.
-        # Enquanto vazio, a playlist recebe só música.
+        ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
         SPOTIFY_SHOW_ID: ${{ secrets.SPOTIFY_SHOW_ID }}
         TTS_VOICE: ${{ secrets.TTS_VOICE }}
         FAIXAS_POR_ARTISTA: ${{ secrets.FAIXAS_POR_ARTISTA }}

@@ -27,6 +27,8 @@ PLAYLIST_ID = os.getenv("PLAYLIST_ID")
 
 
 SPEECHIFY_API_KEY = os.getenv("SPEECHIFY_API_KEY")
+ELEVENLABS_API_KEY=os.getenv("ELEVENLABS_API_KEY")
+
 
 # ID do "Show" (podcast) no catálogo do Spotify. Só existe DEPOIS que você
 # submete o podcast.xml via Spotify for Podcasters e o Spotify aprova/ingere
