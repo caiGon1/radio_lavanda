@@ -1,65 +1,74 @@
-# Rádio Lavanda 🌿
+# 🪻 Rádio Lavanda
 
-DJ de rádio 100% automatizado: o Gemini atua como Diretor Musical e Roteirista,
-o Spotify monta a playlist do dia, o Edge-TTS grava as falas do locutor
-"Saturn" e o Supabase hospeda os áudios finais.
+> *A sua dose diária de tranquilidade, automatizada com carinho.* 🎧✨
 
-## Instalação
+![Python](https://img.shields.io/badge/Python-3.x-blue?style=for-the-badge&logo=python&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-Automated-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
+![Status](https://img.shields.io/badge/Status-No_Ar-brightgreen?style=for-the-badge)
+
+A **Rádio Lavanda** é um projeto automatizado criado para gerar programas de áudio, compilar blocos com música de fundo suave e publicar novos episódios sem que você precise mexer um único dedo no dia a dia. Relaxante para quem ouve, prático para quem dev.
+
+---
+
+## 💡 Como Funciona?
+
+Tudo roda redondinho como uma estação de rádio de alta frequência:
+[ Conteúdo / Scripts ] ➔ [ Trilha de Fundo ] ➔ [ Mixagem Automática ] ➔ [ No Ar! 🚀 ]
+
+1. **Agendamento Robusto:** Um fluxo no GitHub Actions (`cron.yml`) acorda a aplicação nos horários programados.
+2. **Processamento em Python:** O script lê as programações (arquivos JSON) e processa as locuções e áudios temporários.
+3. **Harmonia Sonora:** A locução é mixada com a clássica e relaxante `musica_fundo_suave.mp3`.
+4. **Entrega Pronta:** O bloco final é gerado e disponibilizado para os ouvintes!
+
+---
+
+## 🛠️ O que tem debaixo do capô?
+
+* **`programas/`**: Onde ficam armazenadas as rotinas e os scripts dos programas em JSON.
+* **`assets/`**: O acervo musical e sonoro (incluindo as trilhas que dão o clima suave).
+* **`.github/workflows/cron.yml`**: O maestro que roda tudo automaticamente na nuvem.
+* **Python**: A linguagem responsável por juntar todas as peças e fazer a magia acontecer.
+
+---
+
+## 🚀 Como Rodar Localmente
+
+Quer testar a rádio na sua própria máquina? É vapt-vupt!
+
+### 1. Clonar o repositório
+```bash
+git clone [https://github.com/seu-usuario/radio_lavanda.git](https://github.com/seu-usuario/radio_lavanda.git)
+cd radio_lavanda
+```
+
+### 2. Configurar o ambiente
+Crie seu arquivo de variáveis de ambiente com base nas suas necessidades:
+
+```bash
+cp .env.example .env  # se houver, ou crie seu arquivo .env
+```
+
+### 3. Instalar as dependências
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Configuração
-
-Todas as credenciais já estão em `.env` (as mesmas do protótipo original —
-troque-as por chaves novas antes de subir isso para produção ou repositório
-público, já que as antigas foram compartilhadas em texto puro).
-
-## Uso
+### 4. Soltar o som!
+Execute o script principal para gerar um bloco de áudio localmente:
 
 ```bash
-python main.py
+python main.py  # ou o nome do seu script principal
 ```
+O áudio gerado aparecerá temporariamente como temp_bloco_*.mp3 para você conferir a qualidade!
 
-Isso executa o fluxo completo do dia:
+## 🤝 Como Contribuir
+Achou o projeto legal e quer deixar a Rádio Lavanda ainda mais incrível?
 
-1. Gemini escolhe tema, clima, gêneros e artistas do dia.
-2. Spotify busca faixas por artista (sem repetir artista).
-3. A playlist do Spotify é atualizada.
-4. O planejamento do dia + playlist final são salvos em `programas/AAAA-MM-DD.json`.
-5. Gemini escreve as falas dos 4 blocos, já citando as próximas músicas.
-6. Edge-TTS grava cada bloco em MP3.
-7. Cada bloco é enviado para o bucket do Supabase.
+1. Faça um Fork do projeto.
 
-## Agendamento
+2. Crie uma Branch para sua funcionalidade (git checkout -b feature/nova-trilha).
 
-Para rodar todo dia automaticamente, agende `python main.py` via cron
-(Linux/Mac) ou Task Scheduler (Windows), por exemplo às 06h:
+3. Faça o Commit das suas alterações (git commit -m 'Adiciona nova trilha relaxante').
 
-```
-0 6 * * * cd /caminho/do/projeto && /usr/bin/python3 main.py >> log.txt 2>&1
-```
-
-## Estrutura
-
-```
-radio_lavanda/
-├── main.py              # ponto de entrada
-├── config.py             # credenciais e parâmetros (lidos do .env)
-├── radio.py               # orquestrador do fluxo diário
-├── spotify_service.py     # busca e atualização da playlist
-├── gemini_service.py      # diretor musical + roteirista
-├── tts_service.py         # texto -> áudio (edge-tts)
-├── supabase_service.py    # upload dos áudios
-├── prompts/                # prompts do Gemini, separados do código
-└── programas/               # histórico diário em JSON (auditoria)
-```
-
-## Próximos passos sugeridos
-
-- Trocar as credenciais do `.env` (Gemini, Supabase, Spotify) — as atuais já
-  foram expostas em texto puro e devem ser consideradas comprometidas.
-- Adicionar testes automatizados para `spotify_service` e `gemini_service`.
-- Persistir o histórico de artistas dos últimos N dias para evitar repetição
-  entre dias, não só dentro do mesmo dia.
+4. Abra um Pull Request.
