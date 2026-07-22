@@ -13,6 +13,8 @@ from spotipy.oauth2 import SpotifyOAuth
 
 import config
 
+
+from bpm_service import obter_bpm
 logger = logging.getLogger("spotify_service")
 
 _sp = None
@@ -63,7 +65,7 @@ def buscar_faixas_por_artista(nome_artista: str, limite: int = None) -> list[dic
             "name": faixa["name"],
             "artist": faixa["artists"][0]["name"],
             "uri": faixa["uri"],
-            "bpm": int(bpm_map.get(faixa["id"], 120)) 
+            "bpm": obter_bpm(faixa["id"]),  # pode vir None se a API falhar
         }
         for faixa in escolhidas
     ]
@@ -88,7 +90,7 @@ def montar_playlist_do_dia(artistas: list[str]) -> list[dict]:
 
     playlist = playlist[: config.TAMANHO_PLAYLIST]
 
-    playlist.sort(key=lambda faixa: faixa.get("bpm", 120))
+    playlist.sort(key=lambda faixa: faixa.get("bpm") or 120)
     
     logger.info("Playlist reordenada por BPM com sucesso para a transmissão.")
 
