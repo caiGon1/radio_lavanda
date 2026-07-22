@@ -38,7 +38,7 @@ BLOCOS_CONFIG = {
     ),
     4: (
         "Encerramento. Agradeça os ouvintes por ouvirem a Rádio Lavanda, "
-        "deseje um ótimo dia/noite e chame o último bloco musical."
+        "deseje um ótimo dia/noite e chame o último bloco musical caso ainda tenha."
     ),
 }
 
