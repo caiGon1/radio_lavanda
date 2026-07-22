@@ -8,6 +8,8 @@
 
 A **Rádio Lavanda** é um projeto automatizado criado para gerar programas de áudio, compilar blocos com música de fundo suave e publicar novos episódios sem que você precise mexer um único dedo no dia a dia. Relaxante para quem ouve, prático para quem dev.
 
+[![Ouça no Spotify](https://img.shields.io/badge/Ouça_no-Spotify-1DB954?style=for-the-badge&logo=spotify&logoColor=white)](https://open.spotify.com/playlist/4VwS0AuBO0TdylLYY2otbN)
+
 ---
 
 ## 💡 Como Funciona?
