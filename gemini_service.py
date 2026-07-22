@@ -9,8 +9,8 @@ import logging
 import time
 from pathlib import Path
 
+from duckduckgo_search import DDGS
 from google import genai
-from google.genai import types  # Importe o módulo de tipos da SDK
 
 import config
 
@@ -31,21 +31,39 @@ def _carregar_prompt(nome_arquivo: str) -> str:
     return caminho.read_text(encoding="utf-8")
 
 
-def _chamar_gemini(prompt: str, tentativas: int = 3, espera_s: int = 4) -> str | None:
-    """Wrapper com retry simples para chamadas de texto ao Gemini com Google Search."""
-    client = _get_client()
+def buscar_contexto_duckduckgo(termo: str, max_resultados: int = 3) -> str:
+    """
+    Busca notícias/dados recentes via DuckDuckGo para alimentar o contexto do prompt.
+    """
+    try:
+        with DDGS() as ddgs:
+            resultados = list(ddgs.news(keywords=termo, region="wt-wt", max_results=max_resultados))
+            
+            if not resultados:
+                resultados = list(ddgs.text(keywords=termo, region="wt-wt", max_results=max_resultados))
 
-    # Define a configuração habilitando a pesquisa no Google
-    config_execucao = types.GenerateContentConfig(
-        tools=[{"google_search": {}}]  # Ativa a busca Web
-    )
+        contextos = []
+        for r in resultados:
+            titulo = r.get("title", "")
+            snippet = r.get("body") or r.get("snippet") or ""
+            if titulo or snippet:
+                contextos.append(f"- {titulo}: {snippet}")
+        
+        return "\n".join(contextos)
+    except Exception as e:
+        logger.warning("Falha ao buscar dados no DuckDuckGo para '%s': %s", termo, e)
+        return ""
+
+
+def _chamar_gemini(prompt: str, tentativas: int = 3, espera_s: int = 4) -> str | None:
+    """Wrapper com retry para chamadas de texto ao Gemini."""
+    client = _get_client()
 
     for tentativa in range(1, tentativas + 1):
         try:
             resposta = client.models.generate_content(
                 model=config.GEMINI_MODEL,
                 contents=prompt,
-                config=config_execucao,  # Passa a configuração aqui
             )
             if resposta.text:
                 return resposta.text.strip()
@@ -64,13 +82,18 @@ def _chamar_gemini(prompt: str, tentativas: int = 3, espera_s: int = 4) -> str |
         time.sleep(espera_s)
     return None
 
+
 def gerar_planejamento_do_dia() -> dict | None:
-    """
-    O Gemini age como Diretor Musical: escolhe tema, clima, gêneros e artistas
-    do dia. Retorna um dict pronto para ser salvo em programas/AAAA-MM-DD.json.
-    """
+    contexto_web = buscar_contexto_duckduckgo("culture news music trends", max_resultados=4)
+    if not contexto_web:
+        contexto_web = "Nenhuma notícia relevante encontrada. Siga com base no clima atual da estação."
+
     template = _carregar_prompt("diretor_musical.txt")
-    texto = _chamar_gemini(template)
+    
+    # Substituição segura sem f-string/format caso o prompt tenha outras chaves
+    prompt_final = template.replace("{contexto_web}", contexto_web)
+
+    texto = _chamar_gemini(prompt_final)
     if not texto:
         logger.error("Não foi possível gerar o planejamento do dia.")
         return None
@@ -91,19 +114,22 @@ def gerar_planejamento_do_dia() -> dict | None:
 
 
 def gerar_fala_bloco(instrucao_bloco: str, contexto_playlist: list[str] | None = None) -> str | None:
-    """
-    Gera o texto que o Saturn vai falar em um bloco específico.
-    Se contexto_playlist for passado, o locutor menciona as próximas músicas.
-    """
     template = _carregar_prompt("locutor.txt")
 
     trecho_playlist = ""
+    info_extra = ""
+
     if contexto_playlist:
         lista_formatada = "\n".join(f"- {faixa}" for faixa in contexto_playlist)
         trecho_playlist = f"\nAs próximas músicas que vão tocar são:\n{lista_formatada}\n"
+        
+        primeiro_item = contexto_playlist[0]
+        contexto_pesquisa = buscar_contexto_duckduckgo(primeiro_item, max_resultados=2)
+        if contexto_pesquisa:
+            info_extra = f"\nCuriosidades/Notícias da web para enriquecer a fala sobre os artistas:\n{contexto_pesquisa}\n"
 
-    prompt = template.format(
-        instrucao_bloco=instrucao_bloco,
-        trecho_playlist=trecho_playlist,
-    )
+    # Usando .replace() direto em vez de .format() para evitar KeyError com colchetes/chaves do prompt
+    bloco_completo = f"{trecho_playlist}{info_extra}"
+    prompt = template.replace("{instrucao_bloco}", instrucao_bloco).replace("{trecho_playlist}", bloco_completo)
+
     return _chamar_gemini(prompt)
